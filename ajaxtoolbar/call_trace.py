@@ -63,7 +63,6 @@ def globaltrace(frame, why, arg):
                 if trace_depth < 100:
                     indent = "." * trace_depth
                     msg = '%s' % indent, str(p_func).ljust(20), '----->'.rjust(10) , str(c_func).rjust(10)
-                    print msg
                     storage.stack.append("".join(msg))
             trace_depth = trace_depth + 1
         elif why == "return":
