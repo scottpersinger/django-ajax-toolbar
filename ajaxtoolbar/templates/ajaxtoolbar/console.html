@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <style>
+        * {
+            font-family:monaco, courier, monospace;
+            font-size:12px;
+        }
+        .event {
+            overflow:hidden;
+            border:1px solid #CCC;
+            cursor:pointer;
+            margin-bottom:4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar" style="height:60px;margin-top:20px">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <span id="status">updating...</span>
+    </div>
+    <div id="log" style="height:400px;overflow:scroll">
+
+    </div>
+
+    <script>
+        var updating = true;
+        window.addEventListener("message", receiveMessage, false);
+
+        function receiveMessage(event)
+        {
+            if (!updating) {
+                return;
+            }
+            //console.log("Received:");
+            //console.log(event);
+            var msg = JSON.parse(event.data);
+            var logDiv = $('#log');
+            var stack = msg.log.join("<br />");
+            stack.replace(" ", "&nbsp;");
+            logDiv.append("<div style=\"height:3.8em\" class=\"event\">[" + msg.status + "] " + msg.url + "<br />&gt;&gt;" + stack + "</p>");
+            logDiv.scrollTop(logDiv[0].scrollHeight);
+        }
+
+        function resizeDiv() {
+            $('#log').css({width:$(window).width(), height: $(window).height() - $('#toolbar').height()});
+        }
+
+        $('.event').live('click', function() {
+            if ($(this).height() > 100) {
+                $(this).height(60);
+            } else {
+                $(this).css('height','');
+            }
+        });
+
+        $(function() {
+            $('#start').click(function() {
+                updating = true;
+                $('#status').html("updating...");
+            });
+            $('#stop').click(function() {
+                updating = false;
+                $('#status').html("");
+            });
+
+            resizeDiv();
+            $(window).resize(function() {
+                resizeDiv();
+            });
+        });
+    </script>
+</body>
+</html
